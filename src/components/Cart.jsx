@@ -66,12 +66,12 @@ export default function Cart({ open, onClose, items = [], removeFromCart }) {
                           <span className="text-2xl font-bold text-white">
                             ${item.price * item.quantity}
                           </span>
-                          <button
-                            onClick={() => removeFromCart(item.id)}
-                            className="text-sm text-red-400 hover:text-red-300 font-medium opacity-0 group-hover:opacity-100 transition"
-                          >
-                            Remove
-                          </button>
+             <button
+                onClick={() => removeFromCart(item.id)}
+                 className="text-sm text-red-400 hover:text-red-300 font-medium 
+             opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition">
+              Remove </button>
+
                         </div>
                       </div>
                     </div>
