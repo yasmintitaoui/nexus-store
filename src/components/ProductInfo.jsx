@@ -68,10 +68,82 @@ export default function ProductInfo({
 
       {/* Main Card */}
       <div className="bg-black/80 backdrop-blur-2xl border border-white/15 rounded-3xl p-8 space-y-8">
-        {/* Color */}
-        {/* Your Color & Size selectors here (unchanged) */}
-        {/* ... */}
+  <div>
+          <label className="block text-sm font-semibold mb-3 text-white/80">
+            Color
+          </label>
 
+          <div className="flex gap-4">
+            {product.colors.map((color) => (
+              <button
+                key={color}
+                onClick={() => setSelectedColor(color)}
+                className={`w-12 h-12 rounded-full border-2 transition-all duration-200 shadow-md
+                  ${
+                    selectedColor === color
+                      ? "border-white scale-110 shadow-white/30"
+                      : "border-white/20 hover:border-white/40"
+                  }
+                `}
+                style={{
+                  backgroundColor: color === "white" ? "#f2f2f2" : color,
+                }}
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* Size */}
+        <div>
+          <label className="block text-sm font-semibold mb-3 text-white/80">
+            Size
+          </label>
+
+          <div className="grid grid-cols-4 gap-3">
+            {product.sizes.map((size) => (
+              <button
+                key={size}
+                onClick={() => setSelectedSize(size)}
+                className={`py-3 rounded-xl font-semibold transition-all text-center border
+                  ${
+                    selectedSize === size
+                      ? "bg-white text-black border-white shadow-lg"
+                      : "bg-white/5 border-white/10 hover:bg-white/10"
+                  }
+                `}
+              >
+                {size}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Quantity */}
+        <div>
+          <label className="block text-sm font-semibold mb-3 text-white/80">
+            Quantity
+          </label>
+
+          <div className="flex items-center gap-5">
+            <button
+              onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+              className="p-3 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 transition shadow-md"
+            >
+              <Minus className="w-4 h-4" />
+            </button>
+
+            <span className="text-2xl font-bold w-12 text-center">
+              {quantity}
+            </span>
+
+            <button
+              onClick={() => setQuantity((q) => q + 1)}
+              className="p-3 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 transition shadow-md"
+            >
+              <Plus className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
         {/* Buttons Row */}
         <div className="flex gap-4 pt-6">
           <button
