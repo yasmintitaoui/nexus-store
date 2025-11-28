@@ -1,49 +1,65 @@
-// src/App.jsx
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Toaster } from "react-hot-toast";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
-// Components
 import Navbar from "./components/Navbar";
 import Cart from "./components/Cart";
 import ProductPage from "./components/pages/ProductPage";
+import CheckoutPage from "./components/pages/CheckoutPage";
 import Footer from "./components/Footer";
-
-// Constants
-import { logo } from "./constants";
+import { apiClient } from "./api/apiClient";
 
 export default function App() {
-  const [cartItems, setCartItems] = useState([]);
-  const [isCartOpen, setIsCartOpen] = useState(false);
+const [cartItems, setCartItems] = useState([]);
+const [isCartOpen, setIsCartOpen] = useState(false);
 
-  const cartCount = cartItems.length;
+// Load cart from fake backend
+useEffect(() => {
+const fetchCart = async () => {
+const items = await apiClient.getCart();
+setCartItems(items);
+};
+fetchCart();
+}, []);
 
-  const addToCart = (item) => {
-    setCartItems((prev) => [...prev, { ...item, quantity: item.quantity || 1 }]);
-    setIsCartOpen(true);
-  };
+const addToCart = async (item) => {
+const updatedCart = await apiClient.addToCart(item);
+setCartItems(updatedCart);
+setIsCartOpen(true);
+};
 
-  const removeFromCart = (id) => {
-    setCartItems((prev) => prev.filter((item) => item.id !== id));
-  };
+const removeFromCart = async (id, color, size) => {
+const updatedCart = await apiClient.removeFromCart(id, color, size);
+setCartItems(updatedCart);
+};
 
-  return (
-    <>
-      <Toaster position="top-center" />
+return ( <Router> <Toaster position="top-center" />
 
-      <Navbar cartCount={cartCount} onCartOpen={() => setIsCartOpen(true)} />
 
-      <Cart
-        open={isCartOpen}
-        onClose={() => setIsCartOpen(false)}
-        items={cartItems}
-        removeFromCart={removeFromCart}
+  <Navbar cartCount={cartItems.length} onCartOpen={() => setIsCartOpen(true)} />
+
+  <Cart
+    open={isCartOpen}
+    onClose={() => setIsCartOpen(false)}
+    items={cartItems}
+    removeFromCart={removeFromCart}
+  />
+
+  <main>
+    <Routes>
+      <Route
+        path="/"
+        element={<ProductPage addToCart={addToCart} productId={1} />}
       />
+      <Route
+        path="/checkout"
+        element={<CheckoutPage items={cartItems} />}
+      />
+    </Routes>
+  </main>
 
-      <main>
-        <ProductPage addToCart={addToCart} />
-      </main>
+  <Footer />
+</Router>
 
-      <Footer />
-    </>
-  );
+);
 }

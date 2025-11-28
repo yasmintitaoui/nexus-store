@@ -6,7 +6,7 @@ export default function Footer() {
     <footer className="border-t border-white/10 py-16 px-6 bg-black">
       <div className="max-w-7xl mx-auto text-center">
 
-        {/* Your Logo — Bigger & Centered */}
+
         <div className="mb-10">
           <img 
             src={logo} 

@@ -1,8 +1,15 @@
 // src/components/Cart.jsx
 import { X, ShoppingCart } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 export default function Cart({ open, onClose, items = [], removeFromCart }) {
+  const navigate = useNavigate();
   const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+
+  const handleCheckout = () => {
+    onClose(); // Close the cart sidebar
+    navigate("/checkout", { state: { items } }); // Pass cart items to checkout page
+  };
 
   return (
     <>
@@ -41,9 +48,9 @@ export default function Cart({ open, onClose, items = [], removeFromCart }) {
             <>
               {/* Items */}
               <div className="flex-1 overflow-y-auto px-8 pt-6 space-y-5">
-                {items.map((item) => (
+                {items.map((item, idx) => (
                   <div
-                    key={item.id}
+                    key={item.id + item.selectedColor + item.selectedSize + idx}
                     className="group bg-white/5 backdrop-blur-2xl border border-white/10 rounded-2xl p-6 hover:bg-white/8 transition"
                   >
                     <div className="flex gap-6">
@@ -86,7 +93,10 @@ export default function Cart({ open, onClose, items = [], removeFromCart }) {
                   <span className="text-4xl font-bold text-white">${total}</span>
                 </div>
 
-                <button className="w-full bg-white text-black py-5 rounded-2xl font-bold text-xl tracking-wide hover:scale-105 transition-all duration-500 shadow-2xl">
+                <button
+                  onClick={handleCheckout}
+                  className="w-full bg-white text-black py-5 rounded-2xl font-bold text-xl tracking-wide hover:scale-105 transition-all duration-500 shadow-2xl"
+                >
                   Proceed to Checkout
                 </button>
               </div>
