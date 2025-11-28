@@ -1,5 +1,5 @@
 // src/components/ProductGallery.jsx
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "../lib/utils";
 
@@ -7,14 +7,24 @@ export default function ProductGallery({ images = [] }) {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [isFading, setIsFading] = useState(false);
 
+  const galleryRef = useRef(null);
+  let touchStartX = 0;
+  let touchEndX = 0;
+
   // Smooth fade logic
   const changeImage = (newIndex) => {
     setIsFading(true);
     setTimeout(() => {
       setSelectedIndex(newIndex);
       setIsFading(false);
-    }, 150); // Fade-out before changing image
+    }, 150);
   };
+
+  const prev = () =>
+    changeImage((selectedIndex - 1 + images.length) % images.length);
+
+  const next = () =>
+    changeImage((selectedIndex + 1) % images.length);
 
   // Keyboard navigation
   useEffect(() => {
@@ -26,16 +36,28 @@ export default function ProductGallery({ images = [] }) {
     return () => window.removeEventListener("keydown", handleKey);
   });
 
-  const prev = () =>
-    changeImage((selectedIndex - 1 + images.length) % images.length);
+  // Mobile swipe
+  const handleTouchStart = (e) => {
+    touchStartX = e.touches[0].clientX;
+  };
 
-  const next = () =>
-    changeImage((selectedIndex + 1) % images.length);
+  const handleTouchEnd = (e) => {
+    touchEndX = e.changedTouches[0].clientX;
+    const diff = touchEndX - touchStartX;
+
+    if (Math.abs(diff) > 50) {
+      if (diff < 0) next(); // swipe left → next
+      if (diff > 0) prev(); // swipe right → previous
+    }
+  };
 
   return (
     <div className="space-y-8">
       {/* Main Image */}
       <div
+        ref={galleryRef}
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
         className="relative aspect-square rounded-3xl overflow-hidden bg-black/40 backdrop-blur-2xl border border-white/20 shadow-2xl shadow-white/10"
       >
         <img
